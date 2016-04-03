@@ -1,0 +1,9 @@
+<div class="container">
+	<h1><%= user.firstName + ' ' +  user.lastName %> </h1>
+	<h5><%= user.title %></h5>
+	<hr>
+
+	<h5>Email: <%= user.email %></h5>
+	<a href="/user/edit/<%= user.id %>" class="btn btn-primary">Edit</a>
+</div>
+
