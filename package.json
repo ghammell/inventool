@@ -24,7 +24,10 @@
     "include-all": "~0.1.6",
     "rc": "1.0.1",
     "sails": "~0.12.1",
-    "sails-disk": "~0.10.9"
+    "sails-disk": "~0.10.9",
+    "sails.io.js": "^0.13.6",
+    "socket.io-client": "^1.4.5",
+    "underscore": "^1.8.3"
   },
   "scripts": {
     "debug": "node debug app.js",
@@ -36,5 +39,9 @@
     "url": "git://github.com/ghammell/inventool.git"
   },
   "author": "ghammell",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "grunt-contrib-jst": "^0.6.0",
+    "grunt-underscore-jst": "^0.3.0"
+  }
 }

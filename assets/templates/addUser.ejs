@@ -1,0 +1,29 @@
+<tr data-id="<%= user.id %>" data-model="user">
+	<td>
+		<% if (user.online) { %>
+			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+		<% } else { %>
+			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+		<% } %>
+	</td>
+	<td> <a href="/user/show/<%=user.id%>"><%= user.firstName + ' ' + user.lastName %></a></td>
+	<td> <%= user.title %> </td>
+	<td> <%= user.email %> </td>
+	<td>
+		<% if (user.admin) { %>
+			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+		<% } else { %>
+			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+		<% } %>
+	</td>
+	<td> <%= user.createdAt %> </td>
+	<td>
+		<a href="/user/edit/<%= user.id %>?source=userIndex" class="btn btn-primary">Edit</a>
+	</td>
+	<td>
+		<form action="/user/destroy/<%= user.id %>" method="POST">
+			<input type="submit" class="btn btn-danger" value="Delete">
+			<input type="hidden" name="_csrf" value="<%= _csrf %>">
+		</form>						
+	</td>
+</tr>

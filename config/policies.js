@@ -27,9 +27,17 @@ module.exports.policies = {
   ***************************************************************************/
 
   '*': 'flash',
+  session: {
+    'new': 'flash'
+  },
   user: {
-    '*': 'flash',
-    '*': 'sessionAuth'
+    'new': 'flash',
+    create: 'flash',
+    show: 'verifyProfileView',
+    edit: ['flash', 'verifyProfileView'],
+    update: ['flash', 'verifyProfileView'],
+    subscribe: 'flash',
+    '*': 'admin'
   }
 
   /***************************************************************************

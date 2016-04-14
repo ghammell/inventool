@@ -22,7 +22,7 @@ module.exports = {
 			return res.redirect('/session/new');
 		}
 
-		User.findOneByEmail(req.param('email'), function(err, user) {
+		User.findOneByEmail(req.param('email'), function foundUser(err, user) {
 			if (err) {
 				return next(err);
 			}
@@ -54,15 +54,57 @@ module.exports = {
 				req.session.authenticated = true;
 				req.session.user = user;
 
-				// redirect to show user page
-				return res.redirect('/user/show/' + user.id);
+				// set 'online attribute'
+				User.update(user.id, {online: true}, function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					User.publishUpdate(user.id, {
+						online: true,
+						id: user.id,
+						name: user.firstName + ' ' + user.lastName,
+						action: ' has logged in'
+					});
+
+					// if admin, direct to admin view
+					if (req.session.user.admin) {
+						return res.redirect('/user');
+					}
+
+					// redirect to show user page
+					return res.redirect('/user/show/' + user.id);
+				});
 			});
 		});
 	},
 
 	'destroy': function(req, res, next) {
-		req.session.destroy();
-		res.redirect('/session/new');
+		User.findOne(req.session.user.id, function foundUser(err, user) {
+
+			var userId = req.session.user.id;	
+
+			if (err) {
+				return next(err);
+			}
+
+			// set 'online' attribute to false
+			User.update(userId, {online: false}, function(err) {
+				if (err) {
+					return next(err);
+				}				
+
+				User.publishUpdate(userId, {
+					online: false,
+					id: userId,
+					name: user.firstName + ' ' + user.lastName,
+					action: ' has logged out'
+				});
+
+				req.session.destroy();
+				res.redirect('/session/new');
+			});
+		});
 	}
 };
 
