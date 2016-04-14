@@ -81,29 +81,35 @@ module.exports = {
 
 	'destroy': function(req, res, next) {
 		User.findOne(req.session.user.id, function foundUser(err, user) {
-
-			var userId = req.session.user.id;	
-
 			if (err) {
 				return next(err);
 			}
+			
+			var userId = req.session.user.id;	
 
-			// set 'online' attribute to false
-			User.update(userId, {online: false}, function(err) {
-				if (err) {
-					return next(err);
-				}				
+			// if user exists, change their online status publish update
+			if (user) {
+				// set 'online' attribute to false
+				User.update(userId, {online: false}, function(err) {
+					if (err) {
+						return next(err);
+					}				
 
-				User.publishUpdate(userId, {
-					online: false,
-					id: userId,
-					name: user.firstName + ' ' + user.lastName,
-					action: ' has logged out'
+					User.publishUpdate(userId, {
+						online: false,
+						id: userId,
+						name: user.firstName + ' ' + user.lastName,
+						action: ' has logged out'
+					});
+
+					req.session.destroy();
+					res.redirect('/session/new');
 				});
-
+			} else {
+				// otherwise (if the user has since been deleted), just end session and redirect
 				req.session.destroy();
 				res.redirect('/session/new');
-			});
+			}
 		});
 	}
 };

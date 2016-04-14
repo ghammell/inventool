@@ -8,6 +8,13 @@
  *
  */
 module.exports = function(req, res, next) {
+	if (req.session.user) {
+		return ok();
+	} else {
+		res.send(403);
+	}
+
+	/*
 	if (req.session.authenticated) {
 		return next();
 	} else {
@@ -18,4 +25,5 @@ module.exports = function(req, res, next) {
 
 		return res.redirect('/session/new');
 	}
+	*/
 };

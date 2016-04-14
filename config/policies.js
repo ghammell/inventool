@@ -36,7 +36,7 @@ module.exports.policies = {
     show: 'verifyProfileView',
     edit: ['flash', 'verifyProfileView'],
     update: ['flash', 'verifyProfileView'],
-    subscribe: 'flash',
+    subscribe: ['flash', 'sessionAuth'],
     '*': 'admin'
   }
 
