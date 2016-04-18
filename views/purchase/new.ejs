@@ -1,0 +1,21 @@
+<form action="/purchase/create" method="POST" class="form-sign-in">
+
+	<h2>New <%= product.name %> Purchase</h2>
+
+	<% if(flash && flash.err) { %>
+		<% Object.keys(flash.err).forEach(function(error) { %>
+			<div class="alert alert-danger"><%- JSON.stringify(flash.err[error]) %></div>
+		<% }) %>
+	<% } %>
+
+	<div class="form-group">
+		<input type="integer" class="form-control" placeholder="0.00" name="quantity">
+	</div>
+
+	<input type="submit" value="Complete Purchase" class="btn btn-primary btn-lg btn-block">
+	<a href="/product/index" class="btn btn-default btn-lg btn-block">Cancel</a>
+
+	<input type="hidden" name="product" value="<%= product.id %>">
+	<input type="hidden" name="_csrf" value="<%= _csrf %>">
+	
+</form>

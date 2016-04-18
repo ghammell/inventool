@@ -36,7 +36,11 @@ module.exports = {
     },
   	encryptedPassword: {
   		type: 'string'
-  	}
+  	},
+    company: {
+      model: 'company',
+      required: true
+    }
   },
 
   beforeValidate: function(values, next) {
@@ -56,13 +60,22 @@ module.exports = {
       return (next({err: ["Password doesn't match password confirmation."]}))
     }
 
-    require('bcrypt').hash(values.password, 10, function passwordEncrypted(err, encryptedPassword) {
-      if(err) {
-        return next(err);
+    Company.findOne(values.company, function(err, company) {    
+      // if this is the first user in the company, make them an admin by default
+      if (company.users.length == 0) {
+        values.admin = true;
       }
 
-      values.encryptedPassword = encryptedPassword;
-      next();
+      // bcrypt store hashed password for user
+      require('bcrypt').hash(values.password, 10, function passwordEncrypted(err, encryptedPassword) {
+        if(err) {
+          return next(err);
+        }
+
+        values.encryptedPassword = encryptedPassword;
+        next();
+      });
+
     });
   }
 };

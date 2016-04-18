@@ -84,7 +84,7 @@ module.exports = {
 			if (err) {
 				return next(err);
 			}
-			
+
 			var userId = req.session.user.id;	
 
 			// if user exists, change their online status publish update

@@ -1,0 +1,42 @@
+<div class="container">
+	<h1 class="pageHeader">Products</h1>
+
+	<a href="/product/new" class="addButton btn-index-new">
+		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	</a>	
+
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Inventory on Hand</th>		
+				<th colspan="2">Purchases</th>	
+				<th colspan="2">Sales</th>
+				<th colspan="2">Actions</th>	
+			</tr>
+		</thead>
+		<tbody>
+			<% if (products && products.length > 0) { %>
+				<% _.each(products, function(product) { %>
+				<tr>
+					<td><a href="/product/show/<%= product.id %>"><%= product.name %></a></td>
+					<td><%= product.inventoryOnHand %></td>
+					<td><a href="/purchase/new?product=<%= product.id %>" class="btn btn-success">New Purchase</a></td>
+					<td><a href="/purchase/index?product=<%= product.id %>" class="btn btn-default">View Purchases</a></td>
+					<td><a href="/sale/new?product=<%= product.id %>" class="btn btn-primary">New Sale</a></td>
+					<td><a href="sale/index?product=<%= product.id %>" class="btn btn-default">View Sales</a></td>
+					<td><a href="/product/edit/<%= product.id %>" class="btn btn-danger">Edit</a></td>
+					<td>
+						<form action="/product/destroy/<%= product.id %>" method="POST">
+							<input type="submit" class="btn btn-danger" value="Delete">
+							<input type="hidden" name="_csrf" value="<%= _csrf %>">
+						</form>
+					</td>
+				</tr>
+				<% }); %>			
+			<% } else { %>
+				<tr><td colspan="4"><center>No products to display.</center></td></tr>
+			<% } %>
+		</tbody>
+	</table>
+</div>

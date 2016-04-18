@@ -38,6 +38,19 @@ module.exports.policies = {
     update: ['flash', 'verifyProfileView'],
     subscribe: ['flash', 'sessionAuth'],
     '*': 'admin'
+  },
+  company: {
+    dashboard: 'verifyProfileView',
+    '*': 'admin'
+  },
+  product: {
+    new: ['flash', 'verifyProfileView'],
+    '*': 'admin'
+  },
+  purchase: {
+    new: ['flash', 'verifyProfileView'],
+    create: ['flash', 'verifyProfileView'],
+    '*': 'admin'
   }
 
   /***************************************************************************

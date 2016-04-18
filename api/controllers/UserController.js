@@ -13,37 +13,29 @@ module.exports = {
 	},
 
 	'create': function(req, res, next) {
-		var userObj = {
-			firstName: req.param('firstName'),
-			lastName: req.param('lastName'),
-			title: req.param('title'),
-			email: req.param('email'),
-			password: req.param('password'),
-			confirmation: req.param('confirmation'),
-			online: true
-		}
-
-		User.create(userObj, function userCreated(err, user) {
-			if (err) {
-				req.session.flash = {
-					err: err
+		// if companyName is passed in, that should mean that it is a new sign up, so create company
+		if (req.param('companyName')) {
+			Company.create({name: req.param('companyName')}, function companyCreated(err, company) {
+				if (err) {
+					req.session.flash = {
+						err: err
+					}
 				}
-				return res.redirect('/user/new');
-			}
 
-			// log user in
-			req.session.authenticated = true;
-			req.session.user = user;
-			
-			// add action and name attributes to user for flash message
-			user.action = ' has signed up and logged in';
-			user.name = user.firstName + ' ' + user.lastName;
+				createUser(req, res, company, 'signup');	
+			});			
+		} else {
+			// otherwise find the existing company
+			Company.findOne(req.session.user.company, function(err, company) {
+				if (err) {
+					req.session.flash = {
+						err: err
+					}
+				}
 
-			// publish create event
-			User.publishCreate(user);				
-
-			return res.redirect('/user/show/' + user.id);					
-		});
+				createUser(req, res, company, 'addNew');								
+			});
+		}
 	},
 
 	'show': function(req, res, next) {
@@ -62,7 +54,7 @@ module.exports = {
 	},
 
 	'index': function(req, res, next) {
-		User.find(function foundUsers(err, users) {
+		User.find({company: req.session.user.company}).exec(function foundUsers(err, users) {
 			if(err) {
 				return next(err);
 			}
@@ -160,7 +152,7 @@ module.exports = {
 	      return res.badRequest('Not authorized.');
 	    }
 
-		User.find(function foundUsers(err, users) {
+		User.find({company: req.session.user.company}, function foundUsers(err, users) {
 			if (err) {
 				return res.serverError(err);
 			}
@@ -173,10 +165,46 @@ module.exports = {
 	}
 };
 
+// create a user record from company and req
+function createUser(req, res, company, operation) {
+	var userObj = {
+		company: company.id,
+		firstName: req.param('firstName'),
+		lastName: req.param('lastName'),
+		title: req.param('title'),
+		email: req.param('email'),
+		password: req.param('password'),
+		confirmation: req.param('confirmation'),
+		online: true
+	}
 
+	User.create(userObj, function userCreated(err, user) {
+		if (err) {
+			req.session.flash = {
+				err: err
+			}
+			return res.redirect('/user/new');
+		}
+		
+		// add action and name attributes to user for flash message
+		user.action = ' has signed up and logged in';
+		user.name = user.firstName + ' ' + user.lastName;
 
+		// publish create event
+		User.publishCreate(user);	
 
+		if (operation == 'signup') {
+			// new user sign up - log user in
+			req.session.authenticated = true;
+			req.session.user = user;			
+			return res.redirect('/company/dashboard/' + company.id);		
 
+		} else if (operation == 'addNew') {
+			// admin creating new user - take them back to index
+			return res.redirect('/user/index/');
+		}
+	});			
+}
 
 
 

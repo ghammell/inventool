@@ -1,10 +1,21 @@
 <form action="/user/create" method="POST" class="form-sign-in">
-	<h2>Sign Up</h2>
+	<% if(session.user) { %>
+		<h2>Add User</h2>
+	<% } else { %>
+		<h2>Sign Up</h2>
+	<% } %>
 
 	<% if(flash && flash.err) { %>
 		<% Object.keys(flash.err).forEach(function(error) { %>
 			<div class="alert alert-danger"><%- JSON.stringify(flash.err[error]) %></div>
 		<% }) %>
+	<% } %>
+
+	<!-- only display company field if there is no session, indicating that this is a new sign up -->
+	<% if(!session.user) { %>
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="company name" name="companyName">
+		</div>
 	<% } %>
 
 	<div class="form-group">
@@ -13,9 +24,11 @@
 	<div class="form-group">
 		<input type="text" class="form-control" placeholder="last name" name="lastName">
 	</div>
+	<!-- 
 	<div class="form-group">
 		<input type="text" class="form-control" placeholder="title" name="title">
 	</div>	
+	-->
 	<div class="form-group">
 		<input type="text" class="form-control" placeholder="your@email.com" name="email">
 	</div>
@@ -26,7 +39,12 @@
 		<input type="password" class="form-control" placeholder="password confirmation" name="confirmation">
 	</div>
 
-	<input type="submit" value="Sign Up" class="btn btn-lg btn-success btn-block">
+	<% if(session.user) { %>
+		<input type="submit" value="Add User" class="btn btn-lg btn-success btn-block">
+	<% } else { %>
+		<input type="submit" value="Sign Up" class="btn btn-lg btn-success btn-block">
+	<% } %>
+
 	
 	<a href="/" class="btn btn-lg btn-default btn-block">Nevermind</a>
 
