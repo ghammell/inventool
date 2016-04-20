@@ -1,0 +1,26 @@
+<form action="/customer/create" method="POST" class="form-sign-in">
+	<h2>Create Customer</h2>
+
+	<% if(flash && flash.err) { %>
+		<% Object.keys(flash.err).forEach(function(error) { %>
+			<div class="alert alert-danger"><%- JSON.stringify(flash.err[error]) %></div>
+		<% }) %>
+	<% } %>	
+
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="first name" name="firstName">
+	</div>	
+
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="last name" name="lastName">
+	</div>
+
+	<div class="form-group">
+		<input type="email" class="form-control" placeholder="email" name="email">
+	</div>
+
+	<input type="hidden" name="_csrf" value="<%= _csrf %>">	
+
+	<input type="submit" class="btn btn-primary btn-lg btn-block" value="Create Customer">
+	<a href="/customer/index" class="btn btn-default btn-lg btn-block">Cancel</a>
+</form>

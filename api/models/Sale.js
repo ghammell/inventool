@@ -14,7 +14,8 @@ module.exports = {
   	},
   	products: {
   		collection: 'product',
-  		via: 'sales'
+  		via: 'sale',
+      through: 'salelineitem'
   	},
   	customer: {
   		model: 'customer',

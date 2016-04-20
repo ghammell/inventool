@@ -11,10 +11,14 @@
 		<input type="text" class="form-control" placeholder="name" name="name">
 	</div>
 	<div class="form-group">
+		<input type="integer" class="form-control" placeholder="1.23" name="unitPrice">
+	</div>
+	<div class="form-group">
 		<input type="text" class="form-control" placeholder="0.00" name="inventoryOnHand">
 	</div>
 
 	<input type="hidden" name="_csrf" value="<%= _csrf %>">
 
 	<input type="submit" value="Create Product" class="btn btn-primary btn-lg btn-block">
+	<a href="/product/index" class="btn btn-default btn-lg btn-block">Cancel</a>
 </form>

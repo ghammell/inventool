@@ -13,6 +13,7 @@ module.exports = {
 		var productObj = {
 			name: req.param('name'),
 			inventoryOnHand: req.param('inventoryOnHand'),
+			unitPrice: req.param('unitPrice'),
 			company: req.session.user.company
 		}
 

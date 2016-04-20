@@ -16,6 +16,10 @@ module.exports = {
   		model: 'company',
   		required: true
   	},
+    unitPrice: {
+      type: 'integer',
+      required: true
+    },
   	inventoryOnHand: {
   		type: 'integer',
   		defaultsTo: 0.00
@@ -29,8 +33,8 @@ module.exports = {
   	},
   	sales: {
   		collection: 'sale',
-  		via: 'products',
-  		dominant: true
+  		via: 'product',
+  		through: 'salelineitem'
   	}
   }
 };

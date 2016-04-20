@@ -6,6 +6,11 @@
  */
 
 module.exports = {
-	
+	'new': function(req, res, next) {
+		return res.view();
+	},
+	'create': function(req, res, next) {
+		console.log(req);
+	}
 };
 

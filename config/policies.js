@@ -45,11 +45,26 @@ module.exports.policies = {
   },
   product: {
     new: ['flash', 'verifyProfileView'],
+    create: ['flash', 'verifyProfileView'],
+    edit: ['flash', 'verifyProfileView'],
     '*': 'admin'
   },
   purchase: {
     new: ['flash', 'verifyProfileView'],
     create: ['flash', 'verifyProfileView'],
+    edit: ['flash', 'verifyProfileView'],
+    '*': 'admin'
+  },
+  sale: {
+    new: ['flash', 'verifyProfileView'],
+    create: ['flash', 'verifyProfileView'],
+    edit: ['flash', 'verifyProfileView'],
+    '*': 'admin'
+  },
+  customer: {
+    new: ['flash', 'verifyProfileView'],
+    create: ['flash', 'verifyProfileView'],
+    edit: ['flash', 'verifyProfileView'],
     '*': 'admin'
   }
 
