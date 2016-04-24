@@ -36,7 +36,7 @@
 
 	function handleUpdate(event) {
 		var $userRow = $('tr[data-id="' + event.data.id + '"] td .glyphicon').first();
-		if (event.data.online) {				
+		if (event.data.online) {
 			$userRow.removeClass('glyphicon-remove').addClass('glyphicon-ok');
 		} else {
 			$userRow.removeClass('glyphicon-ok').addClass('glyphicon-remove');
@@ -51,7 +51,7 @@
 
 		$('tr:last').after(
 			JST['assets/templates/addUser.ejs'](obj)
-		);		
+		);
 	}
 
 	function handleDestroy(event) {
@@ -69,6 +69,7 @@
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
+				<th></th>
 				<th>Online</th>
 				<th>Name</th>
 				<th>Title</th>
@@ -81,6 +82,11 @@
 		<tbody>
 			<% _.each(users, function(user) { %>
 				<tr data-id="<%= user.id %>" data-model="user">
+					<td>
+						<% if (user.avatarSrc != null) { %>
+							<img src="<%= user.avatarSrc %>" class="img-rounded" alt="<%= user.firstName %>" height="50" />
+						<% } %>
+					</td>
 					<td>
 						<% if (user.online) { %>
 							<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
@@ -106,7 +112,7 @@
 						<form action="/user/destroy/<%= user.id %>" method="POST">
 							<input type="submit" class="btn btn-danger" value="Delete">
 							<input type="hidden" name="_csrf" value="<%= _csrf %>">
-						</form>						
+						</form>
 					</td>
 				</tr>
 			<% }); %>

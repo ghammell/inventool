@@ -3,7 +3,7 @@
 
 	<a href="/customer/new" class="addButton btn-index-new">
 		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-	</a>	
+	</a>
 
 	<table class="table table-striped table-hover">
 		<thead>
@@ -27,9 +27,9 @@
 						<td><a href="/customer/edit/<%= customer.id %>" class="btn btn-danger">Edit</a></td>
 						<td><a href="/customer/destroy/<%= customer.id %>" class="btn btn-danger">Delete</a></td>
 					</tr>
-				<% }); %>	
+				<% }); %>
 			<% } else { %>
-				<tr><td colspan="5"><center>No customers found.</center></td></tr>
+				<tr><td colspan="7"><center>No customers found.</center></td></tr>
 			<% } %>
 			<tr>
 			</tr>

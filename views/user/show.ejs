@@ -1,18 +1,60 @@
-<div class="container">
-	<h1><%= user.firstName + ' ' +  user.lastName %> </h1>
-	<h5><%= user.title %></h5>
-	<hr>
+<script type="text/javascript">
+	$(document).ready(function() {
+		bindUserImage();
+	});
 
-	<h5>Email: <%= user.email %></h5>
-	<% if (session.user.admin) { %>
-		<h5>Admin: 
-			<% if (user.admin) { %>
-				<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-			<% } else { %>
-				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+	function bindUserImage() {
+		$('.userImage').click(function(event) {
+			var form = $('#userImageForm');
+			var userImage = $('.userImage');
+
+			if (form.css('display') == 'none') {
+				userImage.css('-webkit-filter', 'blur(10px)');
+				form.slideDown();
+			} else {
+				userImage.css('-webkit-filter', 'blur(0px)');
+				form.slideUp();
+			}
+		});
+	}
+</script>
+
+<div class="container">
+	<div class="row">
+	  <div class="col-xs-12" style="text-align: center;">
+	  	<div style="display: inline-block; margin: 10px; position: relative;">
+		  	<% if (user.avatarFd != null) { %>
+		  		<img src="<%= user.avatarSrc %>" alt="" class="img-rounded img-responsive userImage" />
+		  	<% } else { %>
+		  		<img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive userImage" />
+		  	<% } %>
+
+	      <form id="userImageForm" style="display: none; position: absolute; bottom: 0; left: 0; right: 0;" action="/user/uploadAvatar/<%= user.id %>" method="POST" enctype="multipart/form-data">
+	      	<div class="form-group">
+	      		<input type="file" name="avatar" class="form-control">
+	      	</div>
+	      	<input type='hidden' name='_csrf' value='<%= _csrf %>'>
+	      	<input type="submit" class="btn btn-primary btn-block" value="upload">
+	      </form>
+	  	</div>
+	  </div>
+	  <div class="col-xs-12" style="text-align: center;">
+			<h1><%= user.firstName + ' ' +  user.lastName %> </h1>
+			<h5><%= user.title %></h5>
+			<hr>
+
+			<h5>Email: <%= user.email %></h5>
+			<% if (session.user.admin) { %>
+				<h5>Admin:
+					<% if (user.admin) { %>
+						<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+					<% } else { %>
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+					<% } %>
+				</h5>
 			<% } %>
-		</h5>
-	<% } %>
-	<a href="/user/edit/<%= user.id %>" class="btn btn-primary">Edit</a>
+			<a href="/user/edit/<%= user.id %>" class="btn btn-primary">Edit</a>
+	  </div>
+	</div>
 </div>
 

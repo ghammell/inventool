@@ -11,7 +11,7 @@ module.exports = {
   attributes: {
   	firstName: {
   		type: 'string',
-  		required: true  		
+  		required: true
   	},
   	lastName: {
   		type: 'string',
@@ -40,6 +40,15 @@ module.exports = {
     company: {
       model: 'company',
       required: true
+    },
+    avatarUrl: {
+      type: 'string'
+    },
+    avatarFd: {
+      type: 'string'
+    },
+    avatarSrc: {
+      type: 'string'
     }
   },
 
@@ -60,7 +69,7 @@ module.exports = {
       return (next({err: ["Password doesn't match password confirmation."]}))
     }
 
-    Company.findOne(values.company, function(err, company) {    
+    Company.findOne(values.company, function(err, company) {
       // if this is the first user in the company, make them an admin by default
       if (company.users.length == 0) {
         values.admin = true;

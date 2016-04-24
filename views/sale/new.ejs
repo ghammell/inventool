@@ -12,7 +12,7 @@
 
 			$('#productTable tr:last').before(
 				JST['assets/templates/saleLineItem.ejs']()
-			);			
+			);
 		});
 	}
 
@@ -46,7 +46,7 @@
 	}
 
 	function bindQuantityChange() {
-		$('body').on('change', 'td[attr=lineItemQuantity] input', function(event) {			
+		$('body').on('change', 'td[attr=lineItemQuantity] input', function(event) {
 			calculateProductInfo($(this), null);
 
 			// calc total sale
@@ -63,10 +63,10 @@
 		// so the unit price should already be filled in
 		var unitPrice = product == null ? getIntFromCurrency(unitPriceEl.text()) : product.unitPrice;
 		unitPriceEl.text('$' + Number(unitPrice).toLocaleString('en'));
-		totalPriceEl.text('$' + Number(unitPrice * quantity).toLocaleString('en'));		
+		totalPriceEl.text('$' + Number(unitPrice * quantity).toLocaleString('en'));
 
 		// calc total sale
-		calculateSaleTotal();	
+		calculateSaleTotal();
 	}
 
 	function calculateSaleTotal() {
@@ -89,7 +89,7 @@
 
 	<a href="/user/new?source=userIndex" class="addButton btn-index-new">
 		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-	</a>	
+	</a>
 
 	<form action="/sale/create" method="POST">
 		<table id="productTable" class="table table-striped table-hover">
