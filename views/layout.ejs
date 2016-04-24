@@ -29,6 +29,7 @@
     -->
 
     <!--STYLES-->
+    <link rel="stylesheet" href="/styles/bootstrap-theme.css">
     <link rel="stylesheet" href="/styles/bootstrap.css">
     <link rel="stylesheet" href="/styles/importer.css">
     <!--STYLES END-->
@@ -38,6 +39,15 @@
       window.inventool = {csrf: "<%= _csrf %>"};
     </script>
     <!-- -->
+
+    <!--SCRIPTS-->
+    <script src="/js/dependencies/sails.io.js"></script>
+    <script src="/js/dependencies/jquery.js"></script>
+    <script src="/js/dependencies/bootstrap.js"></script>
+    <script src="/js/dependencies/underscore.js"></script>
+    <script src="/js/customValidate.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <!--SCRIPTS END-->    
 
     <!-- sounds for flash messages -->
     <audio id="flashAudio">
@@ -140,14 +150,5 @@
           + Use a different preprocessor, like TypeScript
 
     -->
-
-    <!--SCRIPTS-->
-    <script src="/js/dependencies/sails.io.js"></script>
-    <script src="/js/dependencies/jquery.js"></script>
-    <script src="/js/dependencies/underscore.js"></script>
-    <script src="/js/bootstrap.js"></script>
-    <script src="/js/customValidate.js"></script>
-    <script src="/js/jquery.validate.min.js"></script>
-    <!--SCRIPTS END-->
   </body>
 </html>

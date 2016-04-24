@@ -1,7 +1,117 @@
-<form action="/sale/create" method="POST" class="form-sign-in">
-	<h2>New Sale</h2>
+<script type="text/javascript">
+	$(document).ready(function() {
+		bindAddBtn();
+		bindProductSearch();
+		bindProductSelect();
+		bindQuantityChange();
+	});
 
-	<div class="form-group">
-		<input type="text" class="form-control" placeholder="123" name="customer">
-	</div>
-</form>
+	function bindAddBtn() {
+		$('.addButton').on('click', function(e) {
+			e.preventDefault();
+
+			$('#productTable tr:last').before(
+				JST['assets/templates/saleLineItem.ejs']()
+			);			
+		});
+	}
+
+	function bindProductSearch() {
+		$('body').on('keyup', 'td[attr=lineItemName] input', function(event) {
+			var input = $(this);
+			var dropdown = input.parent().find('.dropdown-menu');
+
+			dropdown.empty();
+
+			io.socket.get('/sale/productSearch', {productSearch: input.val()}, function(resData, jwres) {
+				console.log(resData);
+				$.each(resData.products, function(index, product) {
+					input.parent().find('.dropdown-menu').append('<a class="dropdown-item" href="#"">' + product.name + '</a>');
+				});
+			});
+		});
+	}
+
+	function bindProductSelect() {
+		$('body').on('click', 'td[attr=lineItemName] .dropdown-item', function(event) {
+			var button = $(this);
+			var input = button.parents('.dropdown').find('input');
+
+			io.socket.get('/sale/productInfo', {product: button.text()}, function(resData, jwres) {
+				var product = resData.product;
+				input.val(product.name);
+				calculateProductInfo(button, product);
+			});
+		});
+	}
+
+	function bindQuantityChange() {
+		$('body').on('change', 'td[attr=lineItemQuantity] input', function(event) {			
+			calculateProductInfo($(this), null);
+
+			// calc total sale
+			calculateSaleTotal();
+		});
+	}
+
+	function calculateProductInfo(triggerEl, product) {
+		var unitPriceEl = $(triggerEl).parents('tr').find('td[attr=lineItemUnitPrice]');
+		var totalPriceEl = $(triggerEl).parents('tr').find('td[attr=lineItemTotalPrice]');
+		var quantity = $(triggerEl).parents('tr').find('td[attr=lineItemQuantity] input').val();
+
+		// if a product was not passed in, then a different attribute being changed is the trigger
+		// so the unit price should already be filled in
+		var unitPrice = product == null ? getIntFromCurrency(unitPriceEl.text()) : product.unitPrice;
+		unitPriceEl.text('$' + Number(unitPrice).toLocaleString('en'));
+		totalPriceEl.text('$' + Number(unitPrice * quantity).toLocaleString('en'));		
+
+		// calc total sale
+		calculateSaleTotal();	
+	}
+
+	function calculateSaleTotal() {
+		var saleTotalEl = $('td[attr=saleTotalPrice]');
+		var saleTotal = 0;
+
+		$.each($('td[attr=lineItemTotalPrice]'), function(index, lineItemPrice) {
+			saleTotal += getIntFromCurrency($(lineItemPrice).text());
+		});
+
+		saleTotalEl.empty().append('<b>$' + Number(saleTotal).toLocaleString('en') + '</b>');
+	}
+
+	function getIntFromCurrency(currencyVal) {
+		return Number(currencyVal.replace(/[^0-9\.]+/g,""));
+	}
+</script>
+<div class="container">
+	<h1 class="pageHeader">New Sale</h2>
+
+	<a href="/user/new?source=userIndex" class="addButton btn-index-new">
+		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	</a>	
+
+	<form action="/sale/create" method="POST">
+		<table id="productTable" class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>Product</th>
+					<th>Unit Price</th>
+					<th>Quantity</th>
+					<th>Total Price</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr id="salesTotals" class="success">
+					<td><b>Sale Total: </b></td>
+					<td></td>
+					<td></td>
+					<td attr="saleTotalPrice"><b>$0.00</b></td>
+				</tr>
+			</tbody>
+
+		</table>
+
+		<input type="hidden" name="_csrf" value="<%= _csrf %>">
+	</form>
+</div>

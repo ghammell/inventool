@@ -11,7 +11,7 @@
 				<th>Name</th>
 				<th>Email</th>
 				<th>Created Date</th>
-				<th>Sales</th>
+				<th colspan="2">Sales</th>
 				<th colspan="2">Actions</th>
 			</tr>
 		</thead>
@@ -22,7 +22,8 @@
 						<td><%= customer.firstName + ' ' + customer.lastName %></td>
 						<td><%= customer.email %></td>
 						<td><%= customer.createdAt %></td>
-						<td><a href="/sales/index?customer=<%= customer.id %>" class="btn btn-primary">View Sales</a></td>
+						<td><a href="/sale/new?customer=<%= customer.id %>" class="btn btn-primary">New Sale</a></td>
+						<td><a href="/sale/index?customer=<%= customer.id %>" class="btn btn-default">View Sales</a></td>
 						<td><a href="/customer/edit/<%= customer.id %>" class="btn btn-danger">Edit</a></td>
 						<td><a href="/customer/destroy/<%= customer.id %>" class="btn btn-danger">Delete</a></td>
 					</tr>
