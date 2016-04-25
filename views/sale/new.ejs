@@ -6,23 +6,37 @@
 		bindQuantityChange();
 	});
 
+	var saleLineItems = [];
+
 	function bindAddBtn() {
 		$('.addButton').on('click', function(e) {
 			e.preventDefault();
 
+			// count rows, excluding the header row and the last 'totals' row
+			var lineItemCount = $('#productTable tr').not('#salesTotals, thead tr').length;
+
+			// create new sales line item object
+			var newItem = new SaleLineItem(lineItemCount);
+			saleLineItems.push(newItem);
+			console.log(saleLineItems);
+
+			// add row to product table
 			$('#productTable tr:last').before(
-				JST['assets/templates/saleLineItem.ejs']()
+				JST['assets/templates/saleLineItem.ejs']({dataId: lineItemCount})
 			);			
 		});
 	}
 
 	function bindProductSearch() {
+		// method clears and populates the product dropdown for each line item when the user
+		// types a search term into the input
 		$('body').on('keyup', 'td[attr=lineItemName] input', function(event) {
 			var input = $(this);
 			var dropdown = input.parent().find('.dropdown-menu');
 
 			dropdown.empty();
 
+			// retrieve the products based on search term and add them to dropdown list
 			io.socket.get('/sale/productSearch', {productSearch: input.val()}, function(resData, jwres) {
 				console.log(resData);
 				$.each(resData.products, function(index, product) {
@@ -33,20 +47,26 @@
 	}
 
 	function bindProductSelect() {
+		// method updates line item info when a product is selected
 		$('body').on('click', 'td[attr=lineItemName] .dropdown-item', function(event) {
-			var button = $(this);
-			var input = button.parents('.dropdown').find('input');
 
-			io.socket.get('/sale/productInfo', {product: button.text()}, function(resData, jwres) {
-				var product = resData.product;
-				input.val(product.name);
-				calculateProductInfo(button, product);
-			});
+			// button that triggered event
+			var button = $(this);
+
+			// rowId that the button is within
+			var dataId = button.parents('tr').attr('data-id');
+
+			var saleLineItem = saleLineItems[dataId];
+			saleLineItem.setProduct(button.text());
+			console.log(saleLineItem);
+			saleLineItem.setProductInfo();
 		});
 	}
 
 	function bindQuantityChange() {
+		// function updates sales total when quantity on a line item changes
 		$('body').on('change', 'td[attr=lineItemQuantity] input', function(event) {			
+			// calc line item total
 			calculateProductInfo($(this), null);
 
 			// calc total sale
@@ -55,6 +75,7 @@
 	}
 
 	function calculateProductInfo(triggerEl, product) {
+		// function calculates all the data for a specific line item when updates are made
 		var unitPriceEl = $(triggerEl).parents('tr').find('td[attr=lineItemUnitPrice]');
 		var totalPriceEl = $(triggerEl).parents('tr').find('td[attr=lineItemTotalPrice]');
 		var quantity = $(triggerEl).parents('tr').find('td[attr=lineItemQuantity] input').val();
@@ -70,6 +91,7 @@
 	}
 
 	function calculateSaleTotal() {
+		// function calculates the totals for the sale when updates are made
 		var saleTotalEl = $('td[attr=saleTotalPrice]');
 		var saleTotal = 0;
 
@@ -83,6 +105,44 @@
 	function getIntFromCurrency(currencyVal) {
 		return Number(currencyVal.replace(/[^0-9\.]+/g,""));
 	}
+
+	// Sale Line Item object
+	function SaleLineItem(rowId) {
+		var self = this;
+
+		this.rowId = rowId;
+		this.product = null;
+
+		// retrieve the product based on the selection from the dropdown in this row		
+		this.setProduct = function(productName) {
+			io.socket.get('/sale/productInfo', {product: productName}, function(resData, jwres) {
+				self.product = resData.product;
+				console.log(self);
+			});		
+		}
+
+		this.setProductInfo = function() {
+			// function calculates all the data for line item
+			var lineItemRow = self.getRow();
+			console.log(lineItemRow);
+
+			// get all relevant elements
+			var nameEl = lineItemRow.find('td[attr=lineItemName] input');
+			var unitPriceEl = lineItemRow.find('td[attr=lineItemUnitPrice]');
+			var totalPriceEl = lineItemRow.find('td[attr=lineItemTotalPrice]');
+			var quantity = lineItemRow.find('td[attr=lineItemQuantity] input').val();
+
+			nameEl.val(self.product.name);
+			unitPriceEl.text('$' + Number(self.product.unitPrice).toLocaleString('en'));
+			totalPriceEl.text('$' + Number(self.product.unitPrice * quantity).toLocaleString('en'));				
+		}
+	}
+
+	SaleLineItem.prototype.getRow = function() {
+		return $('#productTable tr[data-id="' + this.rowId + '"]');
+	}
+
+	// END SALE LINE ITEM OBJECT
 </script>
 <div class="container">
 	<h1 class="pageHeader">New Sale</h2>
