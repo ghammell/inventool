@@ -28,6 +28,8 @@
     "sails-disk": "~0.10.9",
     "sails-mongo": "^0.12.0",
     "sails.io.js": "^0.13.6",
+    "skipper": "^0.5.9",
+    "skipper-disk": "^0.5.4",
     "socket.io-client": "^1.4.5",
     "underscore": "^1.8.3"
   },
