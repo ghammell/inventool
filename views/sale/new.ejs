@@ -18,7 +18,6 @@
 			// create new sales line item object
 			var newItem = new SaleLineItem(lineItemCount);
 			saleLineItems.push(newItem);
-			console.log(saleLineItems);
 
 			// add row to product table
 			$('#productTable tr:last').before(
@@ -34,13 +33,13 @@
 			var input = $(this);
 			var dropdown = input.parent().find('.dropdown-menu');
 
+			// clear existing values from dropdown
 			dropdown.empty();
 
 			// retrieve the products based on search term and add them to dropdown list
 			io.socket.get('/sale/productSearch', {productSearch: input.val()}, function(resData, jwres) {
-				console.log(resData);
 				$.each(resData.products, function(index, product) {
-					input.parent().find('.dropdown-menu').append('<a class="dropdown-item" href="#"">' + product.name + '</a>');
+					dropdown.append('<a class="dropdown-item" href="#"">' + product.name + '</a>');
 				});
 			});
 		});
@@ -49,45 +48,42 @@
 	function bindProductSelect() {
 		// method updates line item info when a product is selected
 		$('body').on('click', 'td[attr=lineItemName] .dropdown-item', function(event) {
-
 			// button that triggered event
-			var button = $(this);
+			var button = $(this);			
 
 			// rowId that the button is within
 			var dataId = button.parents('tr').attr('data-id');
 
 			var saleLineItem = saleLineItems[dataId];
-			saleLineItem.setProduct(button.text());
-			console.log(saleLineItem);
-			saleLineItem.setProductInfo();
+
+			// set the product attribute on the line item object
+			saleLineItem.setProduct(button.text(), function() {
+
+				// update all info for the line item
+				saleLineItem.setProductInfo();
+
+				// calculate sales total
+				calculateSaleTotal();
+			});
 		});
 	}
 
 	function bindQuantityChange() {
 		// function updates sales total when quantity on a line item changes
 		$('body').on('change', 'td[attr=lineItemQuantity] input', function(event) {			
-			// calc line item total
-			calculateProductInfo($(this), null);
 
-			// calc total sale
+			// rowId that the button is within
+			var dataId = $(this).parents('tr').attr('data-id');
+
+			// get line item from dataId
+			var saleLineItem = saleLineItems[dataId];
+
+			// update all info for row
+			saleLineItem.setProductInfo();
+
+			// calculate sale total
 			calculateSaleTotal();
 		});
-	}
-
-	function calculateProductInfo(triggerEl, product) {
-		// function calculates all the data for a specific line item when updates are made
-		var unitPriceEl = $(triggerEl).parents('tr').find('td[attr=lineItemUnitPrice]');
-		var totalPriceEl = $(triggerEl).parents('tr').find('td[attr=lineItemTotalPrice]');
-		var quantity = $(triggerEl).parents('tr').find('td[attr=lineItemQuantity] input').val();
-
-		// if a product was not passed in, then a different attribute being changed is the trigger
-		// so the unit price should already be filled in
-		var unitPrice = product == null ? getIntFromCurrency(unitPriceEl.text()) : product.unitPrice;
-		unitPriceEl.text('$' + Number(unitPrice).toLocaleString('en'));
-		totalPriceEl.text('$' + Number(unitPrice * quantity).toLocaleString('en'));		
-
-		// calc total sale
-		calculateSaleTotal();	
 	}
 
 	function calculateSaleTotal() {
@@ -100,7 +96,7 @@
 		});
 
 		saleTotalEl.empty().append('<b>$' + Number(saleTotal).toLocaleString('en') + '</b>');
-	}
+	}	
 
 	function getIntFromCurrency(currencyVal) {
 		return Number(currencyVal.replace(/[^0-9\.]+/g,""));
@@ -114,17 +110,19 @@
 		this.product = null;
 
 		// retrieve the product based on the selection from the dropdown in this row		
-		this.setProduct = function(productName) {
+		this.setProduct = function(productName, callback) {
 			io.socket.get('/sale/productInfo', {product: productName}, function(resData, jwres) {
+				// set product attribute of object
 				self.product = resData.product;
-				console.log(self);
+
+				// run callback passed in
+				callback();
 			});		
 		}
 
 		this.setProductInfo = function() {
 			// function calculates all the data for line item
 			var lineItemRow = self.getRow();
-			console.log(lineItemRow);
 
 			// get all relevant elements
 			var nameEl = lineItemRow.find('td[attr=lineItemName] input');
@@ -132,9 +130,10 @@
 			var totalPriceEl = lineItemRow.find('td[attr=lineItemTotalPrice]');
 			var quantity = lineItemRow.find('td[attr=lineItemQuantity] input').val();
 
+			// update elements
 			nameEl.val(self.product.name);
 			unitPriceEl.text('$' + Number(self.product.unitPrice).toLocaleString('en'));
-			totalPriceEl.text('$' + Number(self.product.unitPrice * quantity).toLocaleString('en'));				
+			totalPriceEl.text('$' + Number(self.product.unitPrice * quantity).toLocaleString('en'));		
 		}
 	}
 
