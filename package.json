@@ -22,9 +22,11 @@
     "grunt-sails-linker": "~0.10.1",
     "grunt-sync": "0.2.4",
     "include-all": "~0.1.6",
+    "kerberos": "0.0.19",
     "rc": "1.0.1",
     "sails": "~0.12.1",
     "sails-disk": "~0.10.9",
+    "sails-mongo": "^0.12.0",
     "sails.io.js": "^0.13.6",
     "socket.io-client": "^1.4.5",
     "underscore": "^1.8.3"
