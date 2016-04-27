@@ -47,5 +47,8 @@
   "devDependencies": {
     "grunt-contrib-jst": "^0.6.0",
     "grunt-underscore-jst": "^0.3.0"
-  }
+  },
+  "engines": {
+    "node": "6.0.0"
+  }  
 }
