@@ -108,6 +108,8 @@
 
 		this.rowId = rowId;
 		this.product = null;
+		this.quantity = null;
+		this.totalPrice = null;
 
 		// retrieve the product based on the selection from the dropdown in this row		
 		this.setProduct = function(productName, callback) {
@@ -129,6 +131,10 @@
 			var unitPriceEl = lineItemRow.find('td[attr=lineItemUnitPrice]');
 			var totalPriceEl = lineItemRow.find('td[attr=lineItemTotalPrice]');
 			var quantity = lineItemRow.find('td[attr=lineItemQuantity] input').val();
+
+			// set attributes on record
+			self.quantity = quantity;
+			self.totalPrice = self.product.unitPrice * quantity;
 
 			// update elements
 			nameEl.val(self.product.name);
