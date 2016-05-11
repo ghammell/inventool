@@ -4,6 +4,7 @@
 		bindProductSearch();
 		bindProductSelect();
 		bindQuantityChange();
+		bindFormSubmit();
 	});
 
 	var saleLineItems = [];
@@ -54,6 +55,7 @@
 			// rowId that the button is within
 			var dataId = button.parents('tr').attr('data-id');
 
+			// get line item from list using dataId from element
 			var saleLineItem = saleLineItems[dataId];
 
 			// set the product attribute on the line item object
@@ -146,8 +148,25 @@
 	SaleLineItem.prototype.getRow = function() {
 		return $('#productTable tr[data-id="' + this.rowId + '"]');
 	}
-
 	// END SALE LINE ITEM OBJECT
+
+	// form submission logic
+	function bindFormSubmit() {
+		$('#saleForm input[type=submit]').on('click', function(e) {
+			e.preventDefault();
+
+			console.log(JSON.stringify(saleLineItems));
+
+			io.socket.post('/sale/create', 
+				{
+					lineItems: JSON.stringify(saleLineItems),
+					_csrf: window.inventool.csrf || ''
+				}, 
+				function(resData, jwres) {
+
+			});
+		});
+	}
 </script>
 <div class="container">
 	<h1 class="pageHeader">New Sale</h2>
@@ -156,7 +175,7 @@
 		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 	</a>
 
-	<form action="/sale/create" method="POST">
+	<form action="/sale/create" method="POST" id="saleForm">
 		<table id="productTable" class="table table-striped table-hover">
 			<thead>
 				<tr>
@@ -178,5 +197,7 @@
 		</table>
 
 		<input type="hidden" name="_csrf" value="<%= _csrf %>">
+
+		<input type="submit" value="Confirm" class="btn btn-lg btn-primary btn-block">
 	</form>
 </div>

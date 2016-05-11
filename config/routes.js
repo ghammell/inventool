@@ -34,7 +34,8 @@ module.exports.routes = {
 
   '/': {
     view: 'static/index'
-  }
+  },
+  'get /product/:id/sales': 'ProductController.sales'
 
   /***************************************************************************
   *                                                                          *

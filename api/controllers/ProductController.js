@@ -82,6 +82,28 @@ module.exports = {
 
 			res.redirect('/product/index');
 		});
+	},
+	'sales': function(req, res, next) {
+		console.log(req.param('id'));
+
+		Product.findOne(req.param('id'), function(err, product) {
+			if (err) {
+				return next(err);
+			}
+
+			console.log(product);
+
+			SaleLineItem.find({product: product.id}).populate('sale').exec(function(err, items) {
+				if (err) {
+					return next(err);
+				}
+
+				console.log(product);
+				console.log(items);
+
+				return res.view({product: product, items: items});
+			});
+		});
 	}
 };
 

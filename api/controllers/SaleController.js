@@ -10,7 +10,50 @@ module.exports = {
 		return res.view();
 	},
 	'create': function(req, res, next) {
-		console.log(req);
+		var itemsFromServer = JSON.parse(req.param('lineItems'));
+
+		// list of sale line items to create
+		var itemsToCreate = [];
+
+		// total of sale
+		var saleTotal = 0;
+
+		// generate items and add to list;  increment sales total
+		itemsFromServer.forEach(function(serverItem) {
+			var item = {
+				totalPrice: serverItem.totalPrice,
+				quantity: serverItem.quantity,
+				product: serverItem.product.id
+			};
+
+			// add item to list to create
+			itemsToCreate.push(item);
+
+			// increment sale total
+			saleTotal += item.totalPrice;
+		});		
+
+
+		// create sale and add line items to it
+		var saleObj = {
+			company: req.session.user.company,
+			totalPrice: saleTotal
+		}
+
+		Sale.create(saleObj, function(err, sale) {
+			// set the sale id on each item
+			itemsToCreate.forEach(function(item){
+				item.sale = sale.id
+			});
+
+			console.log('SALE: ');
+			console.log(sale);
+
+			SaleLineItem.create(itemsToCreate, function(err, items) {
+				console.log('ITEMS:');
+				console.log(items);
+			});
+		});
 	},
 	'productSearch': function(req, res, next) {
 		var data = {};

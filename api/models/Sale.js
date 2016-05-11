@@ -20,7 +20,11 @@ module.exports = {
   	customer: {
   		model: 'customer',
   		via: 'sales'
-  	}
+  	},
+    totalPrice: {
+      type: 'integer',
+      defaultsTo: 0.00
+    }
   }
 };
 

@@ -26,7 +26,7 @@
 					<td><a href="/purchase/new?product=<%= product.id %>" class="btn btn-success">New Purchase</a></td>
 					<td><a href="/purchase/index?product=<%= product.id %>" class="btn btn-default">View Purchases</a></td>
 					<td><a href="/sale/new?product=<%= product.id %>" class="btn btn-primary">New Sale</a></td>
-					<td><a href="sale/index?product=<%= product.id %>" class="btn btn-default">View Sales</a></td>
+					<td><a href="/product/<%= product.id %>/sales" class="btn btn-default">View Sales</a></td>
 					<td><a href="/product/edit/<%= product.id %>" class="btn btn-danger">Edit</a></td>
 					<td>
 						<form action="/product/destroy/<%= product.id %>" method="POST">

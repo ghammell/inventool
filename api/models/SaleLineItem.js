@@ -17,7 +17,11 @@ module.exports = {
   	quantity: {
   		type: 'integer',
   		required: true
-  	}
+  	},
+    totalPrice: {
+      type: 'integer',
+      defaultsTo: 0.00
+    }
   }
 };
 
