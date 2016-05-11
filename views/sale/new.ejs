@@ -13,8 +13,52 @@
 		if (data.message == 'saleUpdate') {
 			console.log('saleUpdate!');
 			console.log(data);
+			
+			// only add the line item if this is not mobile
+			if (isMobile.any() == false) {
+				addItemFromUpdate(data.lineItem);	
+			}			
 		}
 	});
+
+	var isMobile = {
+	    Android: function() {
+	        return navigator.userAgent.match(/Android/i);
+	    },
+	    BlackBerry: function() {
+	        return navigator.userAgent.match(/BlackBerry/i);
+	    },
+	    iOS: function() {
+	        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+	    },
+	    Opera: function() {
+	        return navigator.userAgent.match(/Opera Mini/i);
+	    },
+	    Windows: function() {
+	        return navigator.userAgent.match(/IEMobile/i);
+	    },
+	    any: function() {
+	        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+	    }
+	};	
+
+	function addItemFromUpdate(lineItem) {
+		// count rows, excluding the header row and the last 'totals' row
+		var lineItemCount = $('#productTable tr').not('#salesTotals, thead tr').length;
+
+		// create new sales line item object
+		var newItem = new SaleLineItem(lineItemCount);
+		newItem.product = lineItem.product;
+		newItem.quantity = lineItem.quantity;
+		saleLineItems.push(newItem);
+
+		// add row to product table
+		$('#productTable tr:last').before(
+			JST['assets/templates/saleLineItem.ejs']({dataId: lineItemCount})
+		);			
+
+		newItem.setProductInfo();
+	}
 
 
 	// BEGIN SALE FUNCTIONALITY
@@ -91,6 +135,9 @@
 				// update all info for the line item
 				saleLineItem.setProductInfo();
 
+				// broadcast update
+				saleLineItem.broadcastUpdate();
+
 				// calculate sales total
 				calculateSaleTotal();
 			});
@@ -109,6 +156,9 @@
 
 			// update all info for row
 			saleLineItem.setProductInfo();
+
+			// broadcast update
+			saleLineItem.broadcastUpdate();			
 
 			// calculate sale total
 			calculateSaleTotal();
@@ -168,10 +218,7 @@
 			// update elements
 			nameEl.val(self.product.name);
 			unitPriceEl.text('$' + Number(self.product.unitPrice).toLocaleString('en'));
-			totalPriceEl.text('$' + Number(self.product.unitPrice * quantity).toLocaleString('en'));	
-
-			// broadcast update to other screens
-			self.broadcastUpdate();	
+			totalPriceEl.text('$' + Number(self.product.unitPrice * quantity).toLocaleString('en'));		
 		}
 
 		this.broadcastUpdate = function() {
