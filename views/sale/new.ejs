@@ -13,34 +13,18 @@
 		if (data.message == 'saleUpdate') {
 			console.log('saleUpdate!');
 			console.log(data);
-			
-			// only add the line item if this is not mobile
-			if (isMobile.any() == false) {
+
+			// only add the line item if the update is from a mobile device
+			if (data.isFromMobile == true && isMobile() == false) {
 				addItemFromUpdate(data.lineItem);	
 			}			
 		}
 	});
 
-	var isMobile = {
-	    Android: function() {
-	        return navigator.userAgent.match(/Android/i);
-	    },
-	    BlackBerry: function() {
-	        return navigator.userAgent.match(/BlackBerry/i);
-	    },
-	    iOS: function() {
-	        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-	    },
-	    Opera: function() {
-	        return navigator.userAgent.match(/Opera Mini/i);
-	    },
-	    Windows: function() {
-	        return navigator.userAgent.match(/IEMobile/i);
-	    },
-	    any: function() {
-	        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-	    }
-	};	
+	function isMobile() {
+		try{ document.createEvent("TouchEvent"); return true; }
+		catch(e){ return false; }
+	}	
 
 	function addItemFromUpdate(lineItem) {
 		// count rows, excluding the header row and the last 'totals' row
@@ -226,7 +210,8 @@
 			var broadcastData = {
 				lineItem: JSON.stringify(saleLineItems[this.rowId]), 
 				_csrf: window.inventool.csrf || '',
-				roomName: 'newSale'
+				roomName: 'newSale',
+				isMobile: isMobile()
 			}
 
 			// broadcast sales data to other screens

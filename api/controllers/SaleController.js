@@ -110,7 +110,11 @@ module.exports = {
 
 		var roomName = req.session.user.id + '_' + req.param('roomName');
 
-		sails.sockets.broadcast(roomName, {message: 'saleUpdate', lineItem: JSON.parse(req.param('lineItem'))});
+		sails.sockets.broadcast(roomName, {
+			message: 'saleUpdate', 
+			lineItem: JSON.parse(req.param('lineItem')),
+			isFromMobile: req.param('isMobile')
+		});
 	}
 };
 
