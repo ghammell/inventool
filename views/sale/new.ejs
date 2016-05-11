@@ -1,4 +1,23 @@
 <script type="text/javascript">
+	// BEGIN SUBSCRIBE FUNCTIONALITY
+	io.socket.get('/sale/subscribe', {roomName: 'newSale'}, function(resData, jwres) {
+		console.log(resData);		
+	});
+
+	io.socket.on('message', function(data) {
+		if (data.message == 'newSubscriber') {
+			console.log('newSubscriber!');
+			console.log(data);
+		}
+
+		if (data.message == 'saleUpdate') {
+			console.log('saleUpdate!');
+			console.log(data);
+		}
+	});
+
+
+	// BEGIN SALE FUNCTIONALITY
 	$(document).ready(function() {
 		bindAddBtn();
 		bindProductSearch();
@@ -8,6 +27,14 @@
 	});
 
 	var saleLineItems = [];
+
+	function getSaleLineItems() {		
+		var data = {
+			lineItems: JSON.stringify(saleLineItems), 
+			_csrf: window.inventool.csrf || ''
+		}				
+		return data;
+	}
 
 	function bindAddBtn() {
 		$('.addButton').on('click', function(e) {
@@ -141,7 +168,25 @@
 			// update elements
 			nameEl.val(self.product.name);
 			unitPriceEl.text('$' + Number(self.product.unitPrice).toLocaleString('en'));
-			totalPriceEl.text('$' + Number(self.product.unitPrice * quantity).toLocaleString('en'));		
+			totalPriceEl.text('$' + Number(self.product.unitPrice * quantity).toLocaleString('en'));	
+
+			// broadcast update to other screens
+			self.broadcastUpdate();	
+		}
+
+		this.broadcastUpdate = function() {
+			// setup data to send to server to be broadcast to other screens
+			var broadcastData = {
+				lineItem: JSON.stringify(saleLineItems[this.rowId]), 
+				_csrf: window.inventool.csrf || '',
+				roomName: 'newSale'
+			}
+
+			// broadcast sales data to other screens
+			io.socket.post('/sale/broadcastSaleUpdate', broadcastData, function(resData, jwres) {
+				console.log(resData);
+				console.log(jwres);
+			});			
 		}
 	}
 

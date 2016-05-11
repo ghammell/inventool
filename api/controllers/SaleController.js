@@ -86,6 +86,31 @@ module.exports = {
 
 			return res.json(200, data);
 		});
+	},
+	'subscribe': function(req, res, next) {
+		if (!req.isSocket) {
+			return res.badRequest('Not authorized.');
+		}
+
+		var roomName = req.session.user.id + '_' + req.param('roomName');
+		sails.sockets.join(req, roomName, function(err) {
+			if (err) {
+				return res.serverError(err);
+			}
+
+			sails.sockets.broadcast(roomName, {message: 'newSubscriber'});
+
+			return res.json({
+				message: 'Subscribed to ' + roomName
+			})
+		});
+	},
+	'broadcastSaleUpdate': function(req, res, next) {
+		console.log('broadcasting!');
+
+		var roomName = req.session.user.id + '_' + req.param('roomName');
+
+		sails.sockets.broadcast(roomName, {message: 'saleUpdate', lineItem: JSON.parse(req.param('lineItem'))});
 	}
 };
 
