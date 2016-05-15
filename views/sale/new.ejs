@@ -23,6 +23,8 @@
 		if (data.message == 'mobileScan') {
 			console.log('mobile scan!');
 			console.log(data);
+
+			addItemFromMobileScan(data.product);
 		}
 	});
 
@@ -40,6 +42,24 @@
 		newItem.product = lineItem.product;
 		newItem.quantity = lineItem.quantity;
 		saleLineItems.push(newItem);
+
+		// add row to product table
+		$('#productTable tr:last').before(
+			JST['assets/templates/saleLineItem.ejs']({dataId: lineItemCount})
+		);			
+
+		newItem.setProductInfo();
+	}
+
+	function addItemFromMobileScan(product) {
+		// count rows, excluding the header row and the last 'totals' row
+		var lineItemCount = $('#productTable tr').not('#salesTotals, thead tr').length;		
+
+		// create new sales line item object
+		var newItem = new SaleLineItem(lineItemCount);
+		newItem.product = product;	
+		newItem.quantity = 1;
+		saleLineItems.push(newItem);		
 
 		// add row to product table
 		$('#productTable tr:last').before(
