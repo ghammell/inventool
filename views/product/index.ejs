@@ -11,6 +11,7 @@
 				<th>Name</th>
 				<th>Unit Price</th>
 				<th>Inventory on Hand</th>		
+				<th>Bar Code Number</th>
 				<th colspan="2">Purchases</th>	
 				<th colspan="2">Sales</th>
 				<th colspan="2">Actions</th>	
@@ -23,6 +24,7 @@
 					<td><a href="/product/show/<%= product.id %>"><%= product.name %></a></td>
 					<td><%= product.unitPrice %></td>
 					<td><%= product.inventoryOnHand %></td>
+					<td><%= product.barCodeNumber %></td>
 					<td><a href="/purchase/new?product=<%= product.id %>" class="btn btn-success">New Purchase</a></td>
 					<td><a href="/purchase/index?product=<%= product.id %>" class="btn btn-default">View Purchases</a></td>
 					<td><a href="/sale/new?product=<%= product.id %>" class="btn btn-primary">New Sale</a></td>

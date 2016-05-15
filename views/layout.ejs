@@ -48,7 +48,7 @@
       window.inventool = {csrf: "<%= _csrf %>"};
 
       $(document).ready(function() {
-        var scanURL = encodeURIComponent('https://inventool.herokuapp.com/sale/productScan?code={CODE}');
+        var scanURL = encodeURIComponent('https://inventool.herokuapp.com/sale/productScan?code={CODE}&roomName=newSale');
         console.log(scanURL);
 
         $('#productScanAnchor').attr('href', 'http://zxing.appspot.com/scan?ret=' + scanURL + '&SCAN_FORMATS=UPC_A,EAN_13');

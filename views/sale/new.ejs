@@ -19,6 +19,11 @@
 				addItemFromUpdate(data.lineItem);	
 			}			
 		}
+
+		if (data.message == 'mobileScan') {
+			console.log('mobile scan!');
+			console.log(data);
+		}
 	});
 
 	function isMobile() {

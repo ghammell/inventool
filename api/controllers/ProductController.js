@@ -49,7 +49,8 @@ module.exports = {
 		var productObj = {
 			name: req.param('name'),
 			inventoryOnHand: req.param('inventoryOnHand'),
-			unitPrice: req.param('unitPrice')
+			unitPrice: req.param('unitPrice'),
+			barCodeNumber: req.param('barCodeNumber')
 		}
 
 		Product.update(req.param('id'), productObj, function(err, product) {

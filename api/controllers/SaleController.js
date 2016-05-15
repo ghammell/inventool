@@ -115,6 +115,21 @@ module.exports = {
 			lineItem: JSON.parse(req.param('lineItem')),
 			isFromMobile: req.param('isMobile')
 		});
+	},
+	'productScan': function(req, res, next) {
+		// find product via 'code' param
+		Product.findOne({barCodeNumber: req.param('code')}, function(err, product) {
+			if (err) {
+				return next(err);
+			}
+
+			var roomName = req.session.user.id + '_' + req.param('roomName');
+
+			sails.sockets.broadcast(roomName, {
+				message: 'mobileScan', 
+				product: product
+			});			
+		});
 	}
 };
 
