@@ -129,6 +129,9 @@ module.exports = {
 				message: 'mobileScan', 
 				product: product
 			});			
+
+	        var scanURL = encodeURIComponent('https://inventool.herokuapp.com/sale/productScan?code={CODE}&roomName=newSale');			
+			res.redirect('http://zxing.appspot.com/scan?ret=' + scanURL + '&SCAN_FORMATS=UPC_A,EAN_13');
 		});
 	}
 };
