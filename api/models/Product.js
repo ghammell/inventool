@@ -35,7 +35,10 @@ module.exports = {
   		collection: 'sale',
   		via: 'product',
   		through: 'salelineitem'
-  	}
+  	},
+    barCodeNumber: {
+      type: 'string'
+    }
   }
 };
 

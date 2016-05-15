@@ -14,7 +14,8 @@ module.exports = {
 			name: req.param('name'),
 			inventoryOnHand: req.param('inventoryOnHand'),
 			unitPrice: req.param('unitPrice'),
-			company: req.session.user.company
+			company: req.session.user.company,
+			barCodeNumber: req.param('barCodeNumber')
 		}
 
 		Product.create(productObj, function(err, product) {
