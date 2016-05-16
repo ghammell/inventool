@@ -22,7 +22,7 @@
 				<% _.each(products, function(product) { %>
 				<tr>
 					<td><a href="/product/show/<%= product.id %>"><%= product.name %></a></td>
-					<td><%= product.unitPrice %></td>
+					<td>$<%= Number(product.unitPrice).toLocaleString('en') %></td>
 					<td><%= product.inventoryOnHand %></td>
 					<td><%= product.barCodeNumber %></td>
 					<td><a href="/purchase/new?product=<%= product.id %>" class="btn btn-success">New Purchase</a></td>

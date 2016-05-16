@@ -51,11 +51,17 @@
       };
 
       $(document).ready(function() {
-        var scanURL = encodeURIComponent('https://inventool.herokuapp.com/sale/productScan?code={CODE}&roomName=newSale');
-        console.log(scanURL);
-
-        $('#productScanAnchor').attr('href', 'http://zxing.appspot.com/scan?ret=' + scanURL + '&SCAN_FORMATS=UPC_A,EAN_13');
+        bindProductScanButton();
       });
+
+      function bindProductScanButton() {
+        if (window.inventool.isMobile) {
+          var scanURL = encodeURIComponent('https://inventool.herokuapp.com/sale/productScan?code={CODE}&roomName=newSale');
+          $('#productScanAnchor').attr('href', 'http://zxing.appspot.com/scan?ret=' + scanURL + '&SCAN_FORMATS=UPC_A,EAN_13');
+        } else {
+          $('#productScanAnchor').css('display', 'none');          
+        }
+      }
 
       function isMobile() {
         try{ document.createEvent("TouchEvent"); return true; }
@@ -92,9 +98,7 @@
             <li><a href="/company/dashboard/<%= session.user.company %>">Dashboard</a></li>
             <li><a href="/product/index/">Products</a></li>            
             <li><a href="/customer/index/">Customers</a></li>
-            <% if (window.inventool.isMobile) { %>
-              <li><a href="" id="productScanAnchor">Scan Product</a>
-            <% } %>
+            <li><a href="" id="productScanAnchor">Scan Product</a>
           <% } %>
           <% if (session.authenticated && session.user.admin) { %>
             <li><a href="/user">Administration</a></li>        

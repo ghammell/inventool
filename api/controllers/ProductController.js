@@ -15,7 +15,8 @@ module.exports = {
 			inventoryOnHand: req.param('inventoryOnHand'),
 			unitPrice: req.param('unitPrice'),
 			company: req.session.user.company,
-			barCodeNumber: req.param('barCodeNumber')
+			barCodeNumber: req.param('barCodeNumber'),
+			description: req.param('description')
 		}
 
 		Product.create(productObj, function(err, product) {
@@ -50,7 +51,8 @@ module.exports = {
 			name: req.param('name'),
 			inventoryOnHand: req.param('inventoryOnHand'),
 			unitPrice: req.param('unitPrice'),
-			barCodeNumber: req.param('barCodeNumber')
+			barCodeNumber: req.param('barCodeNumber'),
+			description: req.param('description')
 		}
 
 		Product.update(req.param('id'), productObj, function(err, product) {
@@ -73,6 +75,17 @@ module.exports = {
 
 			res.view({
 				products: products
+			});
+		});
+	},
+	'show': function(req, res, next) {
+		Product.findOne(req.param('id'), function(err, product) {
+			if (err) {
+				return next(err);
+			}
+
+			return res.view({
+				product: product
 			});
 		});
 	},
