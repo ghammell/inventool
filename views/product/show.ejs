@@ -4,6 +4,7 @@
 	<h5><b>Inventory On Hand:</b> <%= product.inventoryOnHand %></h5>
 	<h5><b>Unit Price:</b>  $<%=Number(product.unitPrice).toLocaleString('en') %></h5>
 	<h5><b>Description:</b> <%= product.description %></h5>
+	<h5><b>Bar Code Number:</b> <%= product.barCodeNumber %></h5>
 	<div class="row">
 		<div class="col-xs-12 col-sm-3" style="margin-top: 10px;">
 			<a href="/product/<%= product.id %>/sales" class="btn btn-primary btn-block">View Sales</a>

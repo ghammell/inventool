@@ -17,28 +17,34 @@
 			</tr>
 		</thead>
 		<tbody>
-			<% _.each(items, function(item) { %>
+			<% if (items.length > 0) { %>
+				<% _.each(items, function(item) { %>
+					<tr>
+						<td>	
+							<a href="/sale/show<%= item.sale.id %>" class="btn btn-primary">View Sale</a>				
+						</td>
+						<td>
+							<%= item.sale.customer %>
+						</td>						
+						<td>
+							<%= item.quantity %>
+						</td>
+						<td>
+							$<%=  Number(item.totalPrice).toLocaleString('en') %>
+						</td>
+						<td>
+							$<%=  Number(item.sale.totalPrice).toLocaleString('en') %>
+						</td>
+						<td>
+							<%= item.sale.createdAt %>
+						</td>
+					</tr>
+				<% }); %>
+			<% } else { %>
 				<tr>
-					<td>	
-						<a href="/sale/show<%= item.sale.id %>" class="btn btn-primary">View Sale</a>				
-					</td>
-					<td>
-						<%= item.sale.customer %>
-					</td>						
-					<td>
-						<%= item.quantity %>
-					</td>
-					<td>
-						$<%=  Number(item.totalPrice).toLocaleString('en') %>
-					</td>
-					<td>
-						$<%=  Number(item.sale.totalPrice).toLocaleString('en') %>
-					</td>
-					<td>
-						<%= item.sale.createdAt %>
-					</td>
+					<td colspan="6"><center>No sales to display.</center></td>
 				</tr>
-			<% }); %>
+			<% } %>
 		</tbody>
 	</table>
 </div>
