@@ -15,7 +15,7 @@
 			console.log(data);
 
 			// only add the line item if the update is from a mobile device
-			if (data.isFromMobile == true && isMobile() == false) {
+			if (data.isFromMobile == true && window.inventool.isMobile == false) {
 				addItemFromUpdate(data.lineItem);	
 			}			
 		}
@@ -27,11 +27,6 @@
 			addItemFromMobileScan(data.product);
 		}
 	});
-
-	function isMobile() {
-		try{ document.createEvent("TouchEvent"); return true; }
-		catch(e){ return false; }
-	}	
 
 	function addItemFromUpdate(lineItem) {
 		// count rows, excluding the header row and the last 'totals' row
@@ -244,7 +239,7 @@
 				lineItem: JSON.stringify(saleLineItems[this.rowId]), 
 				_csrf: window.inventool.csrf || '',
 				roomName: 'newSale',
-				isMobile: isMobile()
+				isMobile: window.inventool.isMobile
 			}
 
 			// broadcast sales data to other screens

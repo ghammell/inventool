@@ -45,7 +45,10 @@
 
     <!-- ensure that _csrf variable is available on every page -->
     <script>
-      window.inventool = {csrf: "<%= _csrf %>"};
+      window.inventool = {
+        csrf: "<%= _csrf %>",
+        isMobile: isMobile()
+      };
 
       $(document).ready(function() {
         var scanURL = encodeURIComponent('https://inventool.herokuapp.com/sale/productScan?code={CODE}&roomName=newSale');
@@ -53,6 +56,11 @@
 
         $('#productScanAnchor').attr('href', 'http://zxing.appspot.com/scan?ret=' + scanURL + '&SCAN_FORMATS=UPC_A,EAN_13');
       });
+
+      function isMobile() {
+        try{ document.createEvent("TouchEvent"); return true; }
+        catch(e){ return false; }
+      }       
 
     </script>
     <!-- -->    
