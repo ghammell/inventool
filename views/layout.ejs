@@ -92,7 +92,9 @@
             <li><a href="/company/dashboard/<%= session.user.company %>">Dashboard</a></li>
             <li><a href="/product/index/">Products</a></li>            
             <li><a href="/customer/index/">Customers</a></li>
-            <li><a href="" id="productScanAnchor">Scan Product</a>
+            <% if (window.inventool.isMobile) { %>
+              <li><a href="" id="productScanAnchor">Scan Product</a>
+            <% } %>
           <% } %>
           <% if (session.authenticated && session.user.admin) { %>
             <li><a href="/user">Administration</a></li>        
