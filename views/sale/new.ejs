@@ -80,6 +80,8 @@
 		bindProductSelect();
 		bindQuantityChange();
 		bindFormSubmit();
+
+		console.log('<%= product %>');
 	});
 
 	var saleLineItems = [];
@@ -266,6 +268,7 @@
 					_csrf: window.inventool.csrf || ''
 				}, 
 				function(resData, jwres) {
+					// NEED TO HANDLE ERRORS AND ONLY REDIRECT IF THERE ARE NO ERRORS
 					location.href = jwres.headers.Location;
 				}
 			);

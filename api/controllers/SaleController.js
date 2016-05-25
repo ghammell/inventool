@@ -57,6 +57,7 @@ module.exports = {
 			});
 
 			SaleLineItem.create(itemsToCreate, function(err, items) {
+				// NEED TO HANDLE ERRORS AND ONLY REDIRECT IF NO ERRORS
 				res.redirect('/sale/show/' + sale.id);
 			});
 		});
