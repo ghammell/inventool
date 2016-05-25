@@ -260,23 +260,22 @@
 		$('#saleForm input[type=submit]').on('click', function(e) {
 			e.preventDefault();
 
-			console.log(JSON.stringify(saleLineItems));
-
 			io.socket.post('/sale/create', 
 				{
 					lineItems: JSON.stringify(saleLineItems),
 					_csrf: window.inventool.csrf || ''
 				}, 
 				function(resData, jwres) {
-
-			});
+					location.href = jwres.headers.Location;
+				}
+			);
 		});
 	}
 </script>
 <div class="container">
 	<h1 class="pageHeader">New Sale</h2>
 
-	<a href="/user/new?source=userIndex" class="addButton btn-index-new">
+	<a href="#" class="addButton btn-index-new">
 		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 	</a>
 

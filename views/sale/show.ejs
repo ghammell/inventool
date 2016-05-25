@@ -1,0 +1,31 @@
+<div class="container">
+	<h2>Sale #<%= sale.id %></h2>
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th>Product</th>
+				<th>Quantity</th>
+				<th>Total Price</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% if (items.length > 0) { %>
+				<% _.each(items, function(item) { %>
+					<tr>
+						<td><%= item.product.name %></td>
+						<td><%= item.quantity %></td>
+						<td>$<%= Number(item.totalPrice).toLocaleString('en') %></td>
+					</tr>
+				<% }); %>
+			<% } else { %>
+				<tr>
+					<td colspan="3">No products to show.</td>
+				</tr>
+			<% } %>
+			<tr class="success">
+				<td colspan="2"><b>Total:</b></td>
+				<td><b> $<%= Number(sale.totalPrice).toLocaleString('en') %> </b></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

@@ -7,7 +7,17 @@
 
 module.exports = {
 	'new': function(req, res, next) {
-		return res.view();
+		if (req.param('product')) {
+			Product.findOne(req.param('product'), function(err, product) {
+				// NEED TO FIGURE OUT HOW TO GET THIS TO WORK
+				// CURRENTLY THE PRODUCT DATA CAN'T BE ACCESSED VIA JAVASCRIPT ON THE FRONT END
+				return res.view({
+					product: product
+				})
+			});
+		} else {
+			return res.view();	
+		}		
 	},
 	'create': function(req, res, next) {
 		var itemsFromServer = JSON.parse(req.param('lineItems'));
@@ -46,12 +56,23 @@ module.exports = {
 				item.sale = sale.id
 			});
 
-			console.log('SALE: ');
-			console.log(sale);
-
 			SaleLineItem.create(itemsToCreate, function(err, items) {
-				console.log('ITEMS:');
-				console.log(items);
+				res.redirect('/sale/show/' + sale.id);
+			});
+		});
+	},
+	'show': function(req, res, next) {
+		Sale.findOne(req.param('id'), function(err, sale) {
+			if (err) {
+				return next(err);
+			}
+
+			SaleLineItem.find({sale: sale.id}).populate('product').exec(function(err, items) {
+				if (err) {
+					return next(err);
+				}
+
+				return res.view({sale: sale, items: items});
 			});
 		});
 	},
@@ -88,6 +109,9 @@ module.exports = {
 		});
 	},
 	'subscribe': function(req, res, next) {
+		// this method subscribes all instances of the same user to a 'sale' room
+		// to synchronize mobile scanning and desktop sales transactions
+
 		if (!req.isSocket) {
 			return res.badRequest('Not authorized.');
 		}
@@ -106,8 +130,7 @@ module.exports = {
 		});
 	},
 	'broadcastSaleUpdate': function(req, res, next) {
-		console.log('broadcasting!');
-
+		// need to deprecate - using the 'productScan' functionality now
 		var roomName = req.session.user.id + '_' + req.param('roomName');
 
 		sails.sockets.broadcast(roomName, {
@@ -123,13 +146,14 @@ module.exports = {
 				return next(err);
 			}
 
+			// broadcast scanned product data
 			var roomName = req.session.user.id + '_' + req.param('roomName');
-
 			sails.sockets.broadcast(roomName, {
 				message: 'mobileScan', 
 				product: product
 			});			
 
+			// redirect back to barcode scanner to keep scanning additional products
 	        var scanURL = encodeURIComponent('https://inventool.herokuapp.com/sale/productScan?code={CODE}&roomName=newSale');			
 			res.redirect('http://zxing.appspot.com/scan?ret=' + scanURL + '&SCAN_FORMATS=UPC_A,EAN_13');
 		});
