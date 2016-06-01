@@ -16,7 +16,9 @@ module.exports = {
 				})
 			});
 		} else {
-			return res.view();	
+			return res.view({
+				product: null
+			});	
 		}		
 	},
 	'create': function(req, res, next) {

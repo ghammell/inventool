@@ -72,27 +72,45 @@
 		calculateSaleTotal();		
 	}
 
+	// called on document ready - this is initiated when a user clicks 'new sale' on a particular product
+	function addInitialItem() {		
+		if ('<%= product %>' != 'null') {
+			var product = JSON.parse('<%- JSON.stringify(product) %>');
+
+			// create new sales line item object
+			var newItem = new SaleLineItem(0);
+			newItem.product = product;	
+			newItem.quantity = 1;
+			saleLineItems.push(newItem);		
+
+			// add row to product table
+			$('#productTable tr:last').before(
+				JST['assets/templates/saleLineItem.ejs']({dataId: 0})
+			);			
+
+			// calculate info for line item
+			newItem.setProductInfo();
+
+			// calculate sale total
+			calculateSaleTotal();				
+		}
+	}
+
 
 	// BEGIN SALE FUNCTIONALITY
 	$(document).ready(function() {
+		// bind elements
 		bindAddBtn();
 		bindProductSearch();
 		bindProductSelect();
 		bindQuantityChange();
 		bindFormSubmit();
 
-		console.log('<%= product %>');
+		// add initial product to page if passed in as parameter
+		addInitialItem();
 	});
 
 	var saleLineItems = [];
-
-	function getSaleLineItems() {		
-		var data = {
-			lineItems: JSON.stringify(saleLineItems), 
-			_csrf: window.inventool.csrf || ''
-		}				
-		return data;
-	}
 
 	function bindAddBtn() {
 		$('.addButton').on('click', function(e) {
